@@ -11,6 +11,12 @@ import { formatCurrency } from '../lib/utils';
 
 const loanPlans = [
   { 
+    amount: 20000, 
+    interest: '10.0%', 
+    duration: '3-6 Months',
+    features: ['Starter Capital', 'Super Fast Release', 'Minimal Requirements']
+  },
+  { 
     amount: 50000, 
     interest: '2.5%', 
     duration: '6-12 Months',
