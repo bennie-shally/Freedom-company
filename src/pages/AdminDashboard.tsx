@@ -313,8 +313,20 @@ const AdminPlans = () => {
     });
 
     useEffect(() => {
-      const q = query(collection(db, 'investment_plans'), orderBy('minAmount', 'asc'));
-      return onSnapshot(q, s => setPlans(s.docs.map(d => ({id: d.id, ...d.data()}))), (err) => handleFirestoreError(err, OperationType.LIST, 'investment_plans'));
+      const q = query(collection(db, 'investment_plans'));
+      return onSnapshot(q, s => {
+        const fetched = s.docs.map(d => ({id: d.id, ...d.data()}));
+        // Client-side sorting: sort by createdAt ascending, fallback to minAmount ascending
+        const sorted = [...fetched].sort((a: any, b: any) => {
+          const timeA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt).getTime()) : 0;
+          const timeB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt).getTime()) : 0;
+          if (timeA !== timeB) {
+            return timeA - timeB;
+          }
+          return (a.minAmount || 0) - (b.minAmount || 0);
+        });
+        setPlans(sorted);
+      }, (err) => handleFirestoreError(err, OperationType.LIST, 'investment_plans'));
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -329,7 +341,10 @@ const AdminPlans = () => {
             if (editingPlan) {
                 await updateDoc(doc(db, 'investment_plans', editingPlan.id), dataToSave);
             } else {
-                await addDoc(collection(db, 'investment_plans'), dataToSave);
+                await addDoc(collection(db, 'investment_plans'), {
+                    ...dataToSave,
+                    createdAt: serverTimestamp()
+                });
             }
             setIsAdding(false);
             setEditingPlan(null);

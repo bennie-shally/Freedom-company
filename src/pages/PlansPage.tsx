@@ -36,11 +36,20 @@ export const PlansPage: React.FC = () => {
                 profitAmount: data.profitAmount || (data.minAmount * (data.profitPercent || 0) / 100) || 0 
               } as InvestmentPlan;
             });
-            setPlans(fetchedPlans);
+            // Client-side sorting: sort by createdAt ascending, fallback to minAmount ascending
+            const sortedPlans = [...fetchedPlans].sort((a: any, b: any) => {
+              const timeA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt).getTime()) : 0;
+              const timeB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt).getTime()) : 0;
+              if (timeA !== timeB) {
+                return timeA - timeB;
+              }
+              return (a.minAmount || 0) - (b.minAmount || 0);
+            });
+            setPlans(sortedPlans);
             
             // Initialize default amounts
             const initialAmounts: { [key: string]: number } = {};
-            fetchedPlans.forEach(p => {
+            sortedPlans.forEach(p => {
               initialAmounts[p.id] = p.minAmount;
             });
             setAmounts(initialAmounts);
