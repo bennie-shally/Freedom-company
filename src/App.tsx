@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
 import { ScrollToTop } from './components/ScrollToTop';
+import { LiveActivityPopup } from './components/LiveActivityPopup';
 
 // Pages
 import { LandingPage } from './pages/LandingPage';
@@ -68,6 +69,7 @@ export default function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
+        <LiveActivityPopup />
       </AuthProvider>
     </BrowserRouter>
   );

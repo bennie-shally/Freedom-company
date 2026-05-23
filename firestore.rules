@@ -71,7 +71,7 @@ service cloud.firestore {
       return data.name is string && data.name.size() > 0 && data.name.size() <= 100
         && data.minAmount is number && data.minAmount >= 0
         && data.maxAmount is number && data.maxAmount >= data.minAmount
-        && (data.profitPercent is number || data.returnPercent is number)
+        && (data.profitPercent is number || data.returnPercent is number || data.profitAmount is number)
         && (
           (data.durationHours is number && data.durationHours > 0) ||
           (data.durationDays is number && data.durationDays > 0)

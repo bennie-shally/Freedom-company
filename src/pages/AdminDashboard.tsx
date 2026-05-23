@@ -322,6 +322,8 @@ const AdminPlans = () => {
         try {
             const dataToSave = {
               ...formData,
+              profitPercent: 0,
+              returnPercent: 0
               // profitAmount is the new primary field
             };
             if (editingPlan) {
